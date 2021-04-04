@@ -14,8 +14,8 @@ https://i.gyazo.com/acfc4da9dc10260aa67c733b9c7c27a8.mp4
 Gif of the client running with random test folder passed as argument:
 https://i.gyazo.com/977baf3f3341da15db0bb75019082745.mp4
 Gif of the refresh button updating the ./data folder contents after you delete files:
-https://i.gyazo.com/21fd6673381b4e12fb2fa1f444dbda52.mp4
-Gif of the refresh button updating a random test folder passed as argument after you delete files:
+https://i.gyazo.com/21fd6673381b4e12fb2fa1f444dbda52.mp4 
+Gif of the refresh button updating a random test folder passed as argument after you delete files: 
 https://i.gyazo.com/5f42f920d5cabdf8c5f8aa4f1612b328.mp4
 
 Gif of the project running from gradle with no argument:
