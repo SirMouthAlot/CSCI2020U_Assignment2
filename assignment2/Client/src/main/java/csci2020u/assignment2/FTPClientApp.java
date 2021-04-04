@@ -17,7 +17,7 @@ public class FTPClientApp extends Application
 {
     public HttpClient _client;
 
-    public static String _dirPath;
+    public static String _dirPath = ".\\data";
 
     public ListView _serverDir = new ListView<>();
     public ListView _clientDir = new ListView<>();
@@ -27,7 +27,10 @@ public class FTPClientApp extends Application
 
     public static void main(String[] args) 
     {
-        _dirPath = args[0];
+        if (args.length != 0)
+        {
+            _dirPath = args[0];
+        }
 
         launch(args);
     }
@@ -118,25 +121,33 @@ public class FTPClientApp extends Application
 
     private void DownloadSelectedFile()
     {
-        //Gets the name of the selected file
-        String fileDir = (String)_serverFilesList.get(_serverDir.getSelectionModel().getSelectedIndex());
+        //Makes sure that there is actually a selected item
+        if (_serverDir.getSelectionModel().getSelectedItem() != null)
+        {
+            // Gets the name of the selected file
+            String fileDir = (String) _serverFilesList.get(_serverDir.getSelectionModel().getSelectedIndex());
 
-        //Downloads this file
-        _client.SendDownloadCommand(fileDir);
+            // Downloads this file
+            _client.SendDownloadCommand(fileDir);
 
-        //Refreshes lists
-        RefreshListViews();
+            // Refreshes lists
+            RefreshListViews();
+        }
     }
 
     private void UploadSelectedFile()
     {
-        //Gets the name of the selected file
-        String fileDir = (String)_clientFilesList.get(_clientDir.getSelectionModel().getSelectedIndex());
+        //Makes sure that there is actually a selected item
+        if (_clientDir.getSelectionModel().getSelectedItem() != null)
+        {
+            // Gets the name of the selected file
+            String fileDir = (String) _clientFilesList.get(_clientDir.getSelectionModel().getSelectedIndex());
 
-        //Uploads this file
-        _client.SendUploadCommand(fileDir);
+            // Uploads this file
+            _client.SendUploadCommand(fileDir);
 
-        //Refreshes the lists
-        RefreshListViews();
+            // Refreshes the lists
+            RefreshListViews();
+        }
     }
 }

@@ -18,6 +18,10 @@ public class HttpClient
 	private String _hostName;
 	private int _port;
 
+	//Both server and client must be in debug mode for debug to function properly.
+	//Otherwise it will quite probably break the files that you are transferring.
+	private Boolean _debugMode = false;
+
 	public HttpClient(String host, int port, String dirPath) 
 	{
 		//Sets hostName to host
@@ -26,7 +30,8 @@ public class HttpClient
 		_port = port;
 
 		//Sets DirPath to DirPath
-		_dirPath = dirPath;
+		//Makes sure the right slash is used!
+		_dirPath = dirPath.replace("/", "\\");
 	}
 
 	public List<String> SendDirCommand()
@@ -92,7 +97,13 @@ public class HttpClient
 		// send the request
 		System.out.println("Sending Request: " + command);
 		_out.print(command + " " + fileName + "\r\n");
-		_out.print("Host: " + _hostName + "\r\n\r\n");
+
+		//Only send this message in debug
+		if (_debugMode)
+		{
+			_out.print("Host: " + _hostName + "\r\n\r\n");
+		}
+
 		_out.flush();
 	}
 
@@ -128,18 +139,20 @@ public class HttpClient
 			String line;
 			List<String> list = new ArrayList<>();
 
-			//Ignore the garbage info lines
-			_in.readLine();
-			_in.readLine();
-			_in.readLine();
-			_in.readLine();
-			_in.readLine();
-			_in.readLine();
-			_in.readLine();
+			//Read in the response information lines if in debug
+			if (_debugMode)
+			{
+				System.out.println(_in.readLine());
+				System.out.println(_in.readLine());
+				System.out.println(_in.readLine());
+				System.out.println(_in.readLine());
+				System.out.println(_in.readLine());
+				System.out.println(_in.readLine());
+				System.out.println(_in.readLine());
+			}
 
 			while ((line = _in.readLine()) != null) 
 			{
-				System.out.println(line);
 				list.add(line);
 			}
 			File newFile = new File(fileName);
@@ -162,7 +175,6 @@ public class HttpClient
 		try 
 		{
 			File file = new File(fileName);
-			System.out.println(file.length());
 
 			if (!file.exists()) 
 			{
@@ -174,7 +186,6 @@ public class HttpClient
 				FileInputStream fileIn = new FileInputStream(file);
 				fileIn.read(content);
 				fileIn.close();
-				System.out.write(content);
 				String message = new String(content, StandardCharsets.UTF_8);
 				_out.print(message);
 				_out.flush();

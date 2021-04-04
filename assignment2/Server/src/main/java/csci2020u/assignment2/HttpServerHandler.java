@@ -10,6 +10,10 @@ public class HttpServerHandler implements Runnable
 	private BufferedReader requestInput = null;
 	private DataOutputStream responseOutput = null;
 
+	//Both server and client must be in debug mode for debug to function properly.
+	//Otherwise it will quite probably break the files that you are transferring.
+	private Boolean _debugMode = false;
+
 	public HttpServerHandler(Socket socket) throws IOException 
 	{
 		this.socket = socket;
@@ -57,12 +61,6 @@ public class HttpServerHandler implements Runnable
 			{
 				fileName = tokenizer.nextToken();
 			}
-
-			if (fileName.length() < 1)
-			{
-				fileName = "images/social/amazon.png";
-			}
-
 			if (command.equalsIgnoreCase("DIR")) 
 			{
 				File baseDir = new File("./www/");
@@ -143,9 +141,13 @@ public class HttpServerHandler implements Runnable
 			String line;
 			List<String> list = new ArrayList<>();
 
-			//Ignore the localhost line and empty space lines
-			requestInput.readLine();
-			requestInput.readLine();
+			//Don't print these unless debug mode 
+			if (_debugMode)
+			{
+				// Ignore the localhost line and empty space lines
+				System.out.println(requestInput.readLine());
+				System.out.println(requestInput.readLine());
+			}
 
 			while ((line = requestInput.readLine()) != null) 
 			{
@@ -200,13 +202,17 @@ public class HttpServerHandler implements Runnable
 
 	private void sendResponse(String responseCode, String contentType, byte[] content) throws IOException 
 	{
-		responseOutput.writeBytes(responseCode);
+		//Only sends debug messages if debug mode enabled
+		if (_debugMode)
+		{
+			responseOutput.writeBytes(responseCode);
 
-		responseOutput.writeBytes("Content-Type: " + contentType + "\r\n");
-		responseOutput.writeBytes("Date: " + (new Date()) + "\r\n");
-		responseOutput.writeBytes("Server: Simple-Http-Server v1.0.0\r\n");
-		responseOutput.writeBytes("Content-Length: " + content.length + "\r\n");
-		responseOutput.writeBytes("Connection: Close\r\n\r\n");
+			responseOutput.writeBytes("Content-Type: " + contentType + "\r\n");
+			responseOutput.writeBytes("Date: " + (new Date()) + "\r\n");
+			responseOutput.writeBytes("Server: Simple-Http-Server v1.0.0\r\n");
+			responseOutput.writeBytes("Content-Length: " + content.length + "\r\n");
+			responseOutput.writeBytes("Connection: Close\r\n\r\n");
+		}
 
 		responseOutput.write(content);
 		responseOutput.flush();
